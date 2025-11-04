@@ -8,6 +8,8 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
+        namespace: public
+        group: BANK_GROUP
     sentinel:
       transport:
         dashboard: 127.0.0.1:8080

@@ -76,7 +76,13 @@ public class UserController {
     @GetMapping("/{userId}")
     public ApiResponse<User> getUserById(@PathVariable Long userId) {
         log.info("查询用户信息，用户ID: {}", userId);
-        
+        //让当前程序休眠3秒
+        try {
+            Thread.sleep(6000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         User user = userDatabase.get(userId);
         if (user == null) {
             throw new RuntimeException("用户不存在: " + userId);
