@@ -2,6 +2,7 @@ package com.bank.feign.client;
 
 import com.bank.common.model.Points;
 import com.bank.common.response.ApiResponse;
+import com.bank.feign.client.fallback.PointServiceClientFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,7 +12,7 @@ import com.bank.feign.config.FeignConfig;
  * 积分服务Feign客户端
  * 用于调用积分服务提供的API接口
  */
-@FeignClient(name = "point-service", path = "/api/points", configuration = FeignConfig.class)
+@FeignClient(name = "point-service", path = "/api/points", configuration = FeignConfig.class, fallback = PointServiceClientFallback.class)
 public interface PointServiceClient {
     
     /**

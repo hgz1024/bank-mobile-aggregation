@@ -2,6 +2,7 @@ package com.bank.feign.client;
 
 import com.bank.common.model.Product;
 import com.bank.common.response.ApiResponse;
+import com.bank.feign.client.fallback.ProductServiceClientFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,7 +14,7 @@ import java.util.List;
  * 产品服务Feign客户端
  * 用于调用产品服务提供的API接口
  */
-@FeignClient(name = "product-service", path = "/api/products", configuration = FeignConfig.class)
+@FeignClient(name = "product-service", path = "/api/products", configuration = FeignConfig.class, fallback = ProductServiceClientFallback.class)
 public interface ProductServiceClient {
     
     /**

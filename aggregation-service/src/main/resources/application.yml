@@ -10,6 +10,10 @@ spring:
         server-addr: localhost:8848
         namespace: public
         group: BANK_GROUP
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+        port: 8719
 
 # Feign配置
 feign:
