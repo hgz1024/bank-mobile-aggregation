@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: user-service
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      config:
+        namespace: public
+        group: BANK_GROUP
+        file-extension: yaml

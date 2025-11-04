@@ -4,6 +4,8 @@ import com.bank.common.model.User;
 import com.bank.common.response.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -17,10 +19,22 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api/users")
+@RefreshScope
 public class UserController {
     
     // 模拟用户数据
     private final Map<Long, User> userDatabase = new HashMap<>();
+
+    @Value("${feature.user-service.new-feature-enabled:false}")
+    private boolean newFeatureEnabled;
+
+    @GetMapping("/feature-status")
+    public Map<String, Object> getFeatureStatus() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("newFeatureEnabled", newFeatureEnabled);
+        result.put("message", newFeatureEnabled ? "新功能已启用" : "新功能已禁用");
+        return result;
+    }
     
     /**
      * 构造函数

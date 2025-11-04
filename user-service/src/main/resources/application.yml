@@ -8,15 +8,10 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
-        namespace: public
-        group: BANK_GROUP
-      config:
-        enabled: false  # 本示例不使用配置中心
     sentinel:
       transport:
-        # dashboard地址
         dashboard: 127.0.0.1:8080
-        port: 8719 #指定一个端口，开启客户端与sentinel控制天进行数据交互
+        port: 8719
       eager: true
 management:
   endpoints:
