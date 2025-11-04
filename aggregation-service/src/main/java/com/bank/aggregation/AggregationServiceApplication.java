@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * 聚合服务启动类
@@ -12,6 +13,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients(basePackages = "com.bank.feign.client")
+@ComponentScan(basePackages = {"com.bank.aggregation", "com.bank.feign.client.fallback"})
 public class AggregationServiceApplication {
     /**
      * 主函数，启动聚合服务应用
