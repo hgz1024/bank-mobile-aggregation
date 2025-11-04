@@ -13,6 +13,8 @@ spring:
 
 # Feign配置
 feign:
+  okhttp:
+    enabled: true
   sentinel:
     enabled: true
   client:
@@ -24,8 +26,8 @@ feign:
   compression:
     request:
       enabled: true
-      mime-types: text/xml,application/xml,application/json
-      min-request-size: 216
+      mime-types: text/xml,application/xml,application/json,application/x-www-form-urlencoded
+      min-request-size: 256
     response:
       enabled: true
 

@@ -5,12 +5,13 @@ import com.bank.common.response.ApiResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import com.bank.aggregation.config.FeignConfig;
 
 /**
  * 用户服务Feign客户端
  * 用于调用用户服务提供的API接口
  */
-@FeignClient(name = "user-service", path = "/api/users")
+@FeignClient(name = "user-service", path = "/api/users", configuration = FeignConfig.class)
 public interface UserServiceClient {
     
     /**

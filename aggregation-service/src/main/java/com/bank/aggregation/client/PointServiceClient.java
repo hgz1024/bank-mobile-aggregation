@@ -5,12 +5,13 @@ import com.bank.common.response.ApiResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import com.bank.aggregation.config.FeignConfig;
 
 /**
  * 积分服务Feign客户端
  * 用于调用积分服务提供的API接口
  */
-@FeignClient(name = "point-service", path = "/api/points")
+@FeignClient(name = "point-service", path = "/api/points", configuration = FeignConfig.class)
 public interface PointServiceClient {
     
     /**
