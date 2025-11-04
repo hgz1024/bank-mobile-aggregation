@@ -1,0 +1,60 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: public
+        group: BANK_GROUP
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        # 聚合服务路由
+        - id: aggregation-service
+          uri: lb://aggregation-service
+          predicates:
+            - Path=/api/homepage/**
+          filters:
+            - StripPrefix=0
+
+        # 用户服务路由（直接访问）
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=0
+
+        # 积分服务路由（直接访问）
+        - id: point-service
+          uri: lb://point-service
+          predicates:
+            - Path=/api/points/**
+          filters:
+            - StripPrefix=0
+
+        # 产品服务路由（直接访问）
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/api/products/**
+          filters:
+            - StripPrefix=0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,gateway
+
+logging:
+  level:
+    org.springframework.cloud.gateway: info
+    reactor.netty: info
