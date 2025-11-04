@@ -91,3 +91,68 @@ import com.bank.feign.client.UserServiceClient;
 1. 如果未来有其他服务需要调用这些服务，可以直接添加对 `feign-api` 的依赖
 2. 当服务接口发生变更时，在 `feign-api` 模块中同步更新 Feign 客户端定义
 3. 可以为 `feign-api` 模块建立独立的版本发布流程，便于版本管理
+
+## 个性化配置说明
+
+在将 Feign 客户端集中管理后，如果某个服务在远程调用时希望有自己的超时控制逻辑，可以通过个性化配置来覆盖通用的配置。
+
+### 配置优先级
+
+OpenFeign 的配置遵循以下优先级顺序（从高到低）：
+1. **特定服务配置**（如 user-service、product-service 等）
+2. **默认配置**（default）
+
+这意味着当我们为特定服务定义配置时，它会自动覆盖默认配置。
+
+### 实际应用示例
+
+在 `aggregation-service` 的 application.yml 中，我们已经配置了默认的超时时间：
+
+```yaml
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 10000
+        loggerLevel: basic
+```
+
+如果想要为某个特定服务设置不同的超时时间，只需要添加该服务的配置：
+
+```yaml
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 10000
+        loggerLevel: basic
+      user-service:  # 这会覆盖默认配置
+        connectTimeout: 3000
+        readTimeout: 8000
+```
+
+### 配置匹配规则
+
+Feign 客户端通过 name 属性与配置进行匹配：
+
+```java
+@FeignClient(name = "user-service", path = "/api/users", configuration = FeignConfig.class)
+public interface UserServiceClient {
+    // ...
+}
+```
+
+配置中的 `user-service` 与注解中的 `name = "user-service"` 相匹配，因此会应用对应的超时配置。
+
+### 实际效果
+
+通过这种方式，我们可以实现：
+- **user-service**: 连接超时3秒，读取超时8秒
+- **product-service**: 连接超时5秒，读取超时10秒（使用默认配置）
+- **point-service**: 连接超时5秒，读取超时10秒（使用默认配置）
+
+如果将来需要为 product-service 或 point-service 设置不同的超时时间，只需要在配置中添加对应的配置块即可，无需修改任何 Java 代码。
+
+这种机制使得我们可以灵活地为不同的服务设置不同的超时策略，同时保持代码的简洁和可维护性。
