@@ -11,7 +11,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = "com.bank.aggregation.client")
+@EnableFeignClients(basePackages = "com.bank.feign.client")
 public class AggregationServiceApplication {
     /**
      * 主函数，启动聚合服务应用

@@ -1,8 +1,8 @@
 package com.bank.aggregation.controller;
 
-import com.bank.aggregation.client.PointServiceClient;
-import com.bank.aggregation.client.ProductServiceClient;
-import com.bank.aggregation.client.UserServiceClient;
+import com.bank.feign.client.PointServiceClient;
+import com.bank.feign.client.ProductServiceClient;
+import com.bank.feign.client.UserServiceClient;
 import com.bank.common.model.HomePageData;
 import com.bank.common.model.Points;
 import com.bank.common.model.Product;

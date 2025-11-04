@@ -19,6 +19,7 @@
     <module>aggregation-service</module>
     <module>api-gateway</module>
     <module>common</module>
+    <module>feign-api</module>
   </modules>
 
   <properties>

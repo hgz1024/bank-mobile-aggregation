@@ -1,11 +1,11 @@
-package com.bank.aggregation.client;
+package com.bank.feign.client;
 
 import com.bank.common.model.Product;
 import com.bank.common.response.ApiResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.bank.aggregation.config.FeignConfig;
+import com.bank.feign.config.FeignConfig;
 
 import java.util.List;
 

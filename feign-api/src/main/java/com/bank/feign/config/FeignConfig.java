@@ -1,4 +1,4 @@
-package com.bank.aggregation.config;
+package com.bank.feign.config;
 
 import feign.Contract;
 import feign.Logger;
