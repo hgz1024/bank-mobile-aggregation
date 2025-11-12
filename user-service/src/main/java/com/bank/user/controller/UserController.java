@@ -1,14 +1,16 @@
 package com.bank.user.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.bank.common.model.User;
 import com.bank.common.response.ApiResponse;
+import com.bank.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,13 +22,29 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/users")
 @RefreshScope
+@RequiredArgsConstructor
 public class UserController {
     
-    // 模拟用户数据
-    private final Map<Long, User> userDatabase = new HashMap<>();
+    private final UserService userService;
 
     @Value("${feature.user-service.new-feature-enabled:false}")
     private boolean newFeatureEnabled;
+
+    @GetMapping("/basic")
+    public ApiResponse<String> basicService() {
+        return ApiResponse.success("基础服务已访问");
+    }
+
+    @GetMapping("/premium")
+    public ApiResponse<String> premiumService() {
+        return ApiResponse.success("高级服务已访问");
+    }
+
+    // 添加一个用于测试的接口
+    @GetMapping("/test")
+    public ApiResponse<String> testEndpoint() {
+        return ApiResponse.success("测试接口调用成功");
+    }
 
     @GetMapping("/feature-status")
     public Map<String, Object> getFeatureStatus() {
@@ -37,64 +55,32 @@ public class UserController {
     }
     
     /**
-     * 构造函数
-     * 初始化测试用户数据
+     * 根据用户ID获取用户信息（用于聚合服务调用）
+     * 这是主要的用户查询入口，具有较高优先级
+     * @param userId 用户ID
+     * @return 用户信息
      */
-    public UserController() {
-        // 初始化测试数据
-        User user1 = new User();
-        user1.setId(1L);
-        user1.setUsername("zhangsan");
-        user1.setName("张三");
-        user1.setPhone("13800138001");
-        user1.setEmail("zhangsan@example.com");
-        user1.setUserLevel(2); // 白银用户
-        user1.setRegisterTime(LocalDateTime.now().minusDays(180));
-        user1.setLastLoginTime(LocalDateTime.now().minusHours(2));
-        user1.setStatus(1);
-        userDatabase.put(1L, user1);
-        
-        User user2 = new User();
-        user2.setId(2L);
-        user2.setUsername("lisi");
-        user2.setName("李四");
-        user2.setPhone("13800138002");
-        user2.setEmail("lisi@example.com");
-        user2.setUserLevel(1); // 普通用户
-        user2.setRegisterTime(LocalDateTime.now().minusDays(90));
-        user2.setLastLoginTime(LocalDateTime.now().minusDays(1));
-        user2.setStatus(1);
-        userDatabase.put(2L, user2);
+    @SentinelResource("hotParam")
+    @GetMapping("/{userId}")
+    public ApiResponse<User> getUserById(@PathVariable Long userId) {
+        /*log.info("获取用户信息，用户ID: {}", userId);
+        if (userId == 1){
+            throw new RuntimeException("用户不存在");
+        }*/
+        User user = userService.getUserById(userId);
+        return ApiResponse.success(user);
     }
     
     /**
-     * 根据用户ID获取用户信息
+     * 根据用户ID获取用户信息（用于后台管理查询）
+     * 这是后台管理的用户查询入口，具有较低优先级
+     * 用于演示Sentinel链路流控模式
      * @param userId 用户ID
      * @return 用户信息
-     * @throws RuntimeException 当用户不存在时抛出异常
      */
-    @GetMapping("/{userId}")
-    public ApiResponse<User> getUserById(@PathVariable Long userId) {
-        log.info("查询用户信息，用户ID: {}", userId);
-        //让当前程序休眠3秒
-        try {
-            Thread.sleep(6000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        User user = userDatabase.get(userId);
-        if (user == null) {
-            throw new RuntimeException("用户不存在: " + userId);
-        }
-        
-        // 模拟处理时间
-        try {
-            Thread.sleep(50);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        
+    @GetMapping("/admin/{userId}")
+    public ApiResponse<User> getUserByIdForAdmin(@PathVariable Long userId) {
+        User user = userService.getUserById(userId);
         return ApiResponse.success(user);
     }
 
